@@ -16,9 +16,11 @@ class GoogleClassroomService
     courses = @service.list_courses(page_size: 1)
     { success: true, message: "Connected to Google Classroom API", course_count: courses.courses&.size || 0 }
   rescue Google::Apis::Error => e
-    { success: false, message: "API Error: #{e.message}" }
+    Rails.logger.error "Google Classroom API error during connection test: #{e.message}"
+    { success: false, message: "An error occurred while connecting to Google Classroom" }
   rescue StandardError => e
-    { success: false, message: "Connection Error: #{e.message}" }
+    Rails.logger.error "Google Classroom connection error: #{e.message}"
+    { success: false, message: "An error occurred while connecting to Google Classroom" }
   end
 
   # Fetch courses where user is a teacher
@@ -76,6 +78,7 @@ class GoogleClassroomService
 
       if assignment_params[:due_time]
         due_time = assignment_params[:due_time]
+        due_time = Time.parse(due_time) if due_time.is_a?(String)
         coursework.due_time = Google::Apis::ClassroomV1::TimeOfDay.new(
           hours: due_time.hour,
           minutes: due_time.min
