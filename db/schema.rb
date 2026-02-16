@@ -510,9 +510,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_14_214856) do
     t.string "unconfirmed_email"
     t.virtual "searchable", type: :tsvector, as: "(setweight(to_tsvector('english'::regconfig, (COALESCE(name, ''::character varying))::text), 'A'::\"char\") || setweight(to_tsvector('english'::regconfig, (COALESCE(educational_institute, ''::character varying))::text), 'B'::\"char\"))", stored: true
     t.integer "projects_count", default: 0, null: false
-    t.text "google_access_token"
-    t.text "google_refresh_token"
-    t.string "google_classroom_id"
     t.datetime "google_token_expires_at"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
